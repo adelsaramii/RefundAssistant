@@ -1,6 +1,14 @@
-# Refund Decision Engine
+# Refund Assistant
 
-A rule-based FastAPI backend that simulates a food delivery refund decision system with explainable AI.
+A complete full-stack application for managing food delivery refund requests with AI-powered decision support.
+
+## 🚀 Live Demo
+- **Backend API**: https://refundassistant.onrender.com
+- **Frontend**: Deploy to Vercel, Netlify, or Render (see Frontend section below)
+
+## 📦 Project Components
+- **Backend**: Rule-based FastAPI engine with OpenAI integration
+- **Frontend**: Modern React app with Vite and Tailwind CSS
 
 ## Project Structure
 
@@ -256,6 +264,36 @@ The system is designed with clean architecture:
 - **Data Layer**: Separate CSV loading and generation logic
 - **Engine**: Isolated business logic with clear rules
 - **API**: Thin FastAPI layer that orchestrates components
+
+## Frontend
+
+The frontend is a modern React application built with:
+- **React** + **Vite** - Fast development and build
+- **Tailwind CSS** - Modern, responsive styling
+- **React Router** - Client-side routing
+- **Axios** - API integration
+
+### Frontend Features
+- 📊 **Dashboard**: View and filter all refund cases
+- 🔍 **Case Details**: Detailed view with score breakdown
+- 🤖 **Text Analyzer**: Extract features from complaint text
+- 💰 **Business Impact**: Calculate ROI and savings
+- ⚙️ **Policy Management**: Configure rules and weights
+
+### Running the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Deploying the Frontend
+
+See `frontend/README.md` for detailed deployment instructions for:
+- Vercel (recommended)
+- Netlify
+- Render
 
 ## Notes
 
