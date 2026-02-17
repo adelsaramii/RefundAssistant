@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 API Connection Test</h1>
+    
+    <div id="config" class="test-result info">
+        <strong>API URL:</strong> <span id="api-url">Loading...</span>
+    </div>
+    
+    <button onclick="testConnection()">🧪 Test Connection</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const API_URL = 'https://refundassistant.onrender.com';
+        document.getElementById('api-url').textContent = API_URL;
+        
+        function addResult(title, success, message, data) {
+            const div = document.createElement('div');
+            div.className = `test-result ${success ? 'success' : 'error'}`;
+            div.innerHTML = `
+                <h3>${success ? '✅' : '❌'} ${title}</h3>
+                <p>${message}</p>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        async function testConnection() {
+            document.getElementById('results').innerHTML = '<p>Testing...</p>';
+            
+            // Test 1: Health Check
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                addResult(
+                    'Health Check',
+                    response.ok,
+                    `Status: ${response.status} ${response.statusText}`,
+                    data
+                );
+            } catch (error) {
+                addResult('Health Check', false, `Error: ${error.message}`);
+            }
+            
+            // Test 2: Get Cases
+            try {
+                const response = await fetch(`${API_URL}/cases?demo_only=true`);
+                const data = await response.json();
+                addResult(
+                    'Get Cases',
+                    response.ok,
+                    `Status: ${response.status}. Found ${data.length || 0} cases.`,
+                    data.length > 0 ? data[0] : data
+                );
+            } catch (error) {
+                addResult('Get Cases', false, `Error: ${error.message}`);
+            }
+            
+            // Test 3: CORS Preflight
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                addResult(
+                    'CORS Test',
+                    response.ok,
+                    `CORS headers present: ${response.headers.get('access-control-allow-origin') ? 'Yes' : 'No'}`
+                );
+            } catch (error) {
+                addResult('CORS Test', false, `Error: ${error.message}`);
+            }
+        }
+        
+        // Auto-run test on load
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 500);
+        });
+    </script>
+</body>
+</html>
+
