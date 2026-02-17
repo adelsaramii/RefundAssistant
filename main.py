@@ -23,11 +23,27 @@ app = FastAPI(
 
 # Add CORS middleware to allow cross-origin requests
 # Get allowed origins from environment variable or use defaults
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
+
+# Default allowed origins for common deployment platforms
+default_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://refundassistant.mindportal.cloud",
+    "https://*.vercel.app",
+    "https://*.netlify.app",
+    "https://*.onrender.com",
+]
+
+if allowed_origins_str:
+    allowed_origins = allowed_origins_str.split(",")
+else:
+    allowed_origins = ["*"]  # Allow all origins in development
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
