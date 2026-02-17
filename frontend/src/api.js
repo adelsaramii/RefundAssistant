@@ -1,6 +1,24 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://refundassistant.onrender.com';
+// Try to get API URL from multiple sources
+const getApiUrl = () => {
+  // 1. Try environment variable (build time)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // 2. Try runtime config (from config.js)
+  if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
+    return window.APP_CONFIG.API_URL;
+  }
+  
+  // 3. Default fallback
+  return 'https://refundassistant.onrender.com';
+};
+
+const API_BASE_URL = getApiUrl();
+
+console.log('API Base URL:', API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
